@@ -6,7 +6,7 @@
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
-  
+
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -21,10 +21,11 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
+
   <build>
     <finalName>java-example</finalName>
     <plugins>
+      <!-- Maven Compiler Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -34,12 +35,44 @@
           <target>8</target>
         </configuration>
       </plugin>
+
+      <!-- Maven War Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.3.2</version>
       </plugin>
+
+      <!-- Cargo Maven Plugin for Tomcat Deployment -->
+      <plugin>
+        <groupId>org.codehaus.cargo</groupId>
+        <artifactId>cargo-maven2-plugin</artifactId>
+        <version>1.9.0</version>
+        <configuration>
+          <container>
+            <containerId>tomcat9x</containerId>
+            <type>installed</type>
+          </container>
+          <configuration>
+            <type>standalone</type>
+            <home>/path/to/your/tomcat</home> <!-- Set the correct path to your local Tomcat -->
+            <properties>
+              <cargo.servlet.port>8080</cargo.servlet.port>
+            </properties>
+          </configuration>
+          <deployables>
+            <deployable>
+              <groupId>com.java.example</groupId>
+              <artifactId>java-example</artifactId>
+              <type>war</type>
+              <location>${project.build.directory}/java-example.war</location>
+              <properties>
+                <context>java-example</context>
+              </properties>
+            </deployable>
+          </deployables>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-  
 </project>
